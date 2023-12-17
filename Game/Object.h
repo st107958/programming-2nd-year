@@ -2,13 +2,12 @@
 
 class Object
 {
-private:
-
-	int x;
+	int x; 
 	int y;
 
 public:
 
-	
+
 
 };
+
