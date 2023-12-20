@@ -23,22 +23,17 @@ public:
 template<class T>
 inline void SortFunctor<T>::operator() (T & container, Typesort typesort)
 {
-	/*switch (typesort) {
+	switch (typesort) {
+	case 0:
+		std::sort(container.begin(), container.end());
 	case 1:
 		std::sort(container.begin(), container.end());
-		return container;
 	case 2:
 		std::sort(container.begin(), container.end());
-		return container;
 	case 3:
 		std::sort(container.begin(), container.end());
-		return container;
-	case 4:
-		std::sort(container.begin(), container.end());
-		return container;
-	}*/
+	}
 
-	std::sort(container.begin(), container.end());
 }
 
 template<class T>

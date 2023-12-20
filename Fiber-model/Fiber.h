@@ -9,16 +9,20 @@
 
 class Fiber
 {
-	bool tasks_completed;
 	std::vector<Task> tasks;
+	int amaunt_of_tasks;
 
-	Fiber();
+public:
 
-	void AddTask(int priority, int nubmer, int time);
+	Fiber(int amount_of_tasks = 0);
+
+	void AddTask(int priority, int nubmer, int time = 100);
 
 	void DeleteTask(Task task);
 
-	int NextTask();
+	Task* NextTask();
+
+	void DoTask(Task & task);
 
 	void Proccesing();
 

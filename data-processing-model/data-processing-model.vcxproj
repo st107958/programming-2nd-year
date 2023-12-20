@@ -19,10 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <VCProjectVersion>16.0</VCProjectVersion>
+    <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{03b6f7ea-5c13-4776-b438-f83ad389c4de}</ProjectGuid>
-    <RootNamespace>Fibermodel</RootNamespace>
+    <ProjectGuid>{4177ba39-7930-405c-8fb2-35bc2dc7682d}</ProjectGuid>
+    <RootNamespace>dataprocessingmodel</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -127,13 +127,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Fiber.h" />
-    <ClInclude Include="Task.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Fiber.cpp" />
+    <ClCompile Include="Data.h" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Task.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
