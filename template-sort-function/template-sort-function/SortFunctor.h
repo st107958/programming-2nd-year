@@ -2,9 +2,11 @@
 
 #include <iostream>
 #include <algorithm>
-#include <boost/sort/sort.hpp>
+#include <functional>
 
-enum Typesort { QuickSort, MergeSort, StableSort, CountingSort };
+#include "Sorts.h"
+
+enum Typesort { QuickSort, StableSort, PartialSort };
 
 template <class T>
 class SortFunctor
@@ -15,23 +17,23 @@ public:
 
 	SortFunctor(Typesort typesort = Typesort::QuickSort);
 
-	void operator()(T & container, Typesort typesort);
+	void operator()(T & container, Typesort typesort, int N = 0);
 
 	~SortFunctor();
 };
 
+
+
 template<class T>
-inline void SortFunctor<T>::operator() (T & container, Typesort typesort)
+inline void SortFunctor<T>::operator() (T & container, Typesort typesort, int N)
 {
 	switch (typesort) {
 	case 0:
 		std::sort(container.begin(), container.end());
 	case 1:
-		std::sort(container.begin(), container.end());
+		std::stable_sort(container.begin(), container.end());
 	case 2:
-		std::sort(container.begin(), container.end());
-	case 3:
-		std::sort(container.begin(), container.end());
+		std::partial_sort(container.begin(), container.begin() + N, container.end());
 	}
 
 }

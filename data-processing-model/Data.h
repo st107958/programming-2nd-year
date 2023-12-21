@@ -1,36 +1,40 @@
 #pragma once
 #include <vector>
-#include <iostream>
 
 template <class T>
 class Data
 {
 public:
-	std::vector<T> data;
-	bool data_to_gen;
+    std::vector<T> data;
+    bool data_to_gen;
 
-	Data() {};
+    Data() {};
 
-	T Execute_data()
-	{
-		T temp = this->data.back();
+    T Execute_data()
+    {
+        T temp = this->data.back();
 
-		this->data.pop_back();
-		
-		return temp;
-	}
+        this->data.pop_back();
 
-	bool More_data_to_gen()
-	{
-		if (this->data.empty())
-		{
-			std::cout << "ALL DATA GENERATED" << std::endl;
+        return temp;
+    }
 
-			return false;
-		}
+    void Push(T temp)
+    {
+        this->data.push_back(temp);
 
-		return true;
-	}
+        this->data_to_gen = true;
+    }
 
-	~Data() {};
+    bool empty()
+    {
+        if (data.empty)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    ~Data() {};
 };

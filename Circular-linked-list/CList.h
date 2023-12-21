@@ -1,104 +1,194 @@
 #include <iostream>
-
-template <typename T>
-class Node {
-public:
-    T data;
-    Node* next;
-
-    Node(T value);
-};
-
-template<typename T>
-inline Node<T>::Node(T value) : data(value), next(nullptr) {}
+#include <assert.h>
 
 template <typename T>
 class CLList {
-private:
-    Node<T>* head;
+
+    struct Node {
+    public:
+        T data;
+        Node* next;
+
+        Node(T value = 0) : data(value), next(nullptr) {};
+    };
 
 public:
-    CLList() : head(nullptr) {}
+    Node* head;
+    Node* tail;
+    int size;
 
-    bool isEmpty() const;
-    void append(T data);
-    void display() const;
-    Node<T>* getNodeAtIndex(int index);
-    ~CLList();
-};
-
-template <typename T>
-bool CLList<T>::isEmpty() const {
-    return head == nullptr;
-}
-
-template <typename T>
-void CLList<T>::append(T data) {
-    Node<T>* newNode = new Node<T>(data);
-    if (isEmpty()) {
-        head = newNode;
-        head->next = head;
+    CLList(T data)
+    {
+        this->head = new Node(data);
+        this->tail = this->head;
+        this->size = 1;
     }
-    else {
-        Node<T>* temp = head;
-        while (temp->next != head) {
-            temp = temp->next;
+
+    int GetSize()
+    {
+        return size;
+    }
+
+    T GetValue(Node* head)
+    {
+        if (head != nullptr) {
+            
+            return head->data;
         }
-        temp->next = newNode;
-        newNode->next = head;
-    }
-}
 
-template <typename T>
-void CLList<T>::display() const {
-    if (isEmpty()) {
-        std::cout << "The list is empty." << std::endl;
-        return;
+        throw std::runtime_error("Root node is nullptr");
     }
 
-    Node<T>* temp = head;
+    Node* GetNode(int n, Node* head)
+    {
+        if (n == 0)  return head;
+        else return GetNode(n - 1, head->next);
 
-    do {
-        std::cout << temp->data << " -> ";
-        temp = temp->next;
-    } while (temp != head);
-
-    std::cout << std::endl;
-}
-
-template <typename T>
-CLList<T>::~CLList() {
-    if (!isEmpty()) {
-        Node<T>* current = head;
-        Node<T>* nextNode = nullptr;
-
-        do {
-            nextNode = current->next;
-            delete current;
-            current = nextNode;
-        } while (current != head);
-
-        head = nullptr;
-    }
-}
-
-template <typename T>
-Node<T>* CLList<T>::getNodeAtIndex(int index) {
-    if (isEmpty() || index < 0) {
         return nullptr;
     }
 
-    int currentIndex = 0;
-    Node<T>* current = head;
+    T GetNodeValue(int n, Node* head)
+    {
+        Node* tempnode = GetNode(n, head);
 
-    do {
-        if (currentIndex == index) {
-            return current;
+        T temp = tempnode->data;
+
+        return temp;
+    }
+
+    void InsertTail(T data) 
+    {
+        Node* temp = new Node(data);
+        
+        if (this->size == 0) {
+            this->head = temp;
+            this->tail = temp;
+            temp->next = this->head;
+        }
+        else {
+            this->tail->next = temp;
+            temp->next = this->head;
+            this->tail = temp;
+        }
+        size++;
+    }
+
+    void InsertHead(T data)
+    {
+        Node* temp = new Node(data);
+
+        if (this->size == 0) {
+            this->head = temp;
+            this->tail = temp;
+            temp->next = this->head;
         }
 
-        current = current->next;
-        currentIndex++;
-    } while (current != head);
+        else {
+            this->tail->next = temp;
+            temp->next = this->head;
+            this->head = temp;
+        }
 
-    return nullptr;
+        this->size++;
+    }
+
+    T ExtractNode(int n = 0)
+    {
+        Node* nodeToRemove = GetNode(n, this->head);
+        Node* prevNode = GetNode(n - 1, this->head);
+
+        if (nodeToRemove == nullptr)
+        {
+            throw std::runtime_error("Invalid index");
+        }
+
+        T extractedData = nodeToRemove->data;
+
+        if (nodeToRemove == this->head)
+        {
+            this->head = this->head->next;
+
+            if (&(this->head->next) == &(this->head))
+            {
+                delete this->head;
+                this->head = nullptr;
+                this->size--;
+                return extractedData;
+            }
+        }
+
+        prevNode->next = nodeToRemove->next;
+
+        delete nodeToRemove;
+
+        this->size--;
+
+        return extractedData;
+    }
+
+    void Display() const
+    {
+
+        if (this->size == 0) {
+            std::cout << "List is empty" << std::endl;
+            return;
+        }
+
+        Node* temp = this->head;
+
+        do {
+            std::cout << temp->data << " -> ";
+            temp = temp->next;
+        } while (temp != this->head);
+
+        std::cout << std::endl;
+    }
+    
+    ~CLList() 
+    {
+        if (this->size != 0) {
+            Node* current = this->head;
+            Node* nextNode = nullptr;
+
+            do {
+                nextNode = current->next;
+                delete current;
+                current = nextNode;
+            } while (current != head);
+
+            head = nullptr;
+        }
+    }
+};
+
+void test()
+{
+    CLList<int> list(5);
+
+    assert(list.GetSize() == 1);
+    assert(list.GetNodeValue(0, list.head) == 5);
+
+    list.InsertTail(10);
+    assert(list.GetSize() == 2);
+    assert(list.GetNodeValue(1, list.head) == 10);
+
+    list.InsertHead(3);
+    assert(list.GetSize() == 3);
+    assert(list.GetNodeValue(0, list.head) == 3);
+    assert(list.GetNodeValue(1, list.head) == 5);
+    assert(list.GetNodeValue(2, list.head) == 10);
+
+    int extractedData = list.ExtractNode(1);
+    assert(list.GetSize() == 2);
+    assert(extractedData == 5);
+    assert(list.GetNodeValue(0, list.head) == 3);
+    assert(list.GetNodeValue(1, list.head) == 10);
 }
+
+
+
+
+
+
+
+

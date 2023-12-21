@@ -26,7 +26,7 @@ public:
 
 	void push(T& x);
 	T front();
-	bool pop();
+	void pop();
 	bool empty();
 	int size();
 	queue();
@@ -34,14 +34,14 @@ public:
 };
 
 template <typename T>
-bool queue<T>::pop()
+void queue<T>::pop()
 {
 	std::lock_guard<std::mutex> guard(mut);
 
-	if (this->empty())
+	/*if (this->empty())
 	{
 		return false;
-	};
+	};*/
 
 	Node<T>* temp = this->head;
 	this->head = this->head->next;
@@ -50,7 +50,7 @@ bool queue<T>::pop()
 
 	this->queuesize--;
 
-	return true;
+	/*return true;*/
 }
 
 template <typename T>

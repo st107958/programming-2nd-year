@@ -6,11 +6,11 @@
 #include <condition_variable>
 #include <chrono>
 
-
 #include "Data.h"
 
-#define M 5
-#define N 5
+
+#define M 2
+#define N 2
 
 std::mutex mut;
 std::mutex mut1;
@@ -21,7 +21,7 @@ template <class T>
 void data_generator(std::queue<T> & q, Data<int> & data);
 
 template <class T>
-void data_processor(std::queue<T> & q);
+void data_processor(std::queue<T> & q, Data<int>& data);
 
 template <class T>
 T data_gen(Data<T> & data);
@@ -29,44 +29,61 @@ T data_gen(Data<T> & data);
 template <class T>
 void data_proc(T temp);
 
+template<class T>
+bool More_data_to_gen(Data<T> & data)
+{
+    std::lock_guard<std::mutex> guard(mut1);
+
+    if (data.data.empty())
+    {
+        std::cout << "ALL DATA GENERATED" << std::endl;
+
+        return false;
+    }
+
+    return true;
+}
 
 
 int main(int argc, char* argv[])
 {
-    std::queue<Data<int>> q;
+    
+    std::queue<int> q;
 
     Data<int> dat;
 
-    /*std::vector<std::thread> gener;*/
-
-   /* for (int i = 0; i < M; ++i)  
+    for (int i = 0; i < 10; i++)
     {
-        gener.emplace_back([q, dat]() {
-            data_generator<int> (q, dat);
-            });
-    }*/
+        dat.Push(i);
+    }
+   
+    std::vector<std::thread> gener;
 
-    std::thread gener(data_generator<int>, q, dat);
-    std::thread proc(data_processor<int>, q);
-
-
-    /*for (int i = 0; i < N; ++i)
+    for (int i = 0; i < N; ++i)
     {
-        gener.push_back(std::thread(data_generator<int>, q, dat, i));
+        gener.push_back(std::move(std::thread(data_generator<int>, std::ref(q), std::ref(dat))));
     }
 
     std::vector<std::thread> proc;
 
     for (int i = 0; i < N; ++i) 
     {
-        proc.push_back(std::thread(data_processor<int>, q, i));
-    }*/
+        proc.push_back(std::move(std::thread(data_processor<int>, std::ref(q), std::ref(dat))));
+    }
+
+    for (auto& thread : gener) {
+        thread.join();
+    }
+
+    for (auto& thread : proc) {
+        thread.join();
+    }
 }
 
 template <class T>
 void data_generator(std::queue<T> & q, Data<int> & data)
 {
-    while (data.More_data_to_gen())
+    while (More_data_to_gen(data))
     {
         T temp = data_gen(data);
 
@@ -79,18 +96,18 @@ void data_generator(std::queue<T> & q, Data<int> & data)
 }
 
 template <class T>
-void data_processor(std::queue<T> & q)
+void data_processor(std::queue<T> & q, Data<int>& data)
 {
-    while (true)
+    while (More_data_to_gen(data) || (!q.empty()))
     {
         std::unique_lock<std::mutex> lock(mut);
         
         cv.wait(lock, [&q] { return !q.empty(); });
-        
+
         T temp = q.front();
-        
+
         q.pop();
-        
+
         lock.unlock();
         
         data_proc(temp);
@@ -100,11 +117,13 @@ void data_processor(std::queue<T> & q)
 template<class T>
 T data_gen(Data<T> & data)
 {
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
     T temp = data.Execute_data();
 
     mut1.lock();
 
-    std::cout << "Data" << temp << "pulled" << std::endl;
+    std::cout << "Data " << temp << " pulled" << std::endl;
 
     mut1.unlock();
 
@@ -118,7 +137,7 @@ void data_proc(T temp)
 
     mut1.lock();
 
-    std::cout << "Data" << temp << "processed" << std::endl;
+    std::cout << "Data " << temp << " processed" << std::endl;
 
     mut1.unlock();
 }
