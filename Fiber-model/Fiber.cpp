@@ -62,7 +62,11 @@ void Fiber::DoTask(Task & task)
 
 void Fiber::Proccesing()
 {
-	while (this->amaunt_of_tasks != 0)
+	/*while (this->amaunt_of_tasks != 0)
+	{
+		DoTask(*NextTask());
+	}*/
+	for (int i = 0; i < 100; ++i)
 	{
 		DoTask(*NextTask());
 	}

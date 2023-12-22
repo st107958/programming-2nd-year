@@ -47,11 +47,24 @@ TEST(ThreadSafeQueueTest, PopTest) {
 
     std::thread t3([&queue1]() {
         for (int i = 0; i < 1000; ++i) {
-            queue1.pop();
+            queue1.push(i);
         }
         });
 
     std::thread t4([&queue1]() {
+        for (int i = 1000; i < 2000; ++i) {
+            queue1.push(i);
+        }
+        });
+
+
+    std::thread t5([&queue1]() {
+        for (int i = 0; i < 1000; ++i) {
+            queue1.pop();
+        }
+        });
+
+    std::thread t6([&queue1]() {
         for (int i = 1000; i < 1999; ++i) {
             queue1.pop();
         }
@@ -60,8 +73,10 @@ TEST(ThreadSafeQueueTest, PopTest) {
     
     t3.join();
     t4.join();
+    t5.join();
+    t6.join();
 
-    EXPECT_EQ(queue1.size(), 0);
+    EXPECT_EQ(queue1.size(), 2000);
 
 }
 

@@ -9,10 +9,10 @@
 
 class Fiber
 {
+public:
+
 	std::vector<Task> tasks;
 	int amaunt_of_tasks;
-
-public:
 
 	Fiber(int amount_of_tasks = 0);
 

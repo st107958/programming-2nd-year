@@ -18,5 +18,11 @@ int main(int argc, char* argv[])
 
 	F.Proccesing();
 
+	for (int i = 0; i < 5; i++) 
+	{
+		std::cout << "Subtausk of priority " << F.tasks[i].task_priority << " done " << F.tasks[i].testparam_subtask_done << " times "<< std::endl;
+	}
+	
+
 	return EXIT_SUCCESS;
 }
