@@ -4,8 +4,9 @@
 
 class Field
 {
-	std::vector<std::vector<Object>> Field;
+	std::vector<std::vector<Object>> field;
 
+	void update();
 
 };
 
