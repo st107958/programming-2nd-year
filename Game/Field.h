@@ -4,9 +4,12 @@
 
 class Field
 {
-	std::vector<std::vector<Object>> field;
+public:
+	std::vector<std::vector<std::vector<Object>>> field;
 
-	void update();
+	void GenerateField();
+
+	void Update();
 
 };
 

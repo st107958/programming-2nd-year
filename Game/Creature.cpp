@@ -1,5 +1,9 @@
 #include "Creature.h"
 
+void Creature::GenerateGenom()
+{
+}
+
 void Creature::Move(int x)
 {
 	if (x > 7 || x < 0) throw ("isn't a move");
@@ -22,4 +26,12 @@ void Creature::Move(int x)
 	case 7:
 		this->ChangeCoordinates(-1, 1);
 	}
+}
+
+void Creature::Eat()
+{
+}
+
+void Creature::Die()
+{
 }
